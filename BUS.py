@@ -1,73 +1,46 @@
 from RAM import RAM
+from DEBUG import DEBUG
 
-class BUS:
+class BUS():
 
-	def __init__(self):
-		self.WIDTH = 8
-		self.DATABUS = DATA()
-		self.ADDRBUS = ADDR()
-
-	def SEND(self, ADDR, DATA):
+	def SEND(self, ADDR, BYTE):	# Send Function
 		pass
 	
-	def RECEIVE(self):
-		# DEBUG ======================= #
-		print('BUS: RECEIVE: ' + str(self.ADDRBUS.PEEK())) #
+	def RECEIVE(self): # Receive Function
+		BYTE = DATA().READ()
+		DEBUG().MSG('BUS', 'RECEIVE', 'DATA', BYTE)
+		return BYTE
 
-		return self.DATABUS.DATA(self.ADDRBUS.PEEK())
+	def PUSH(self, BYTE): # Push Function
+		ADDR().PUSH(BYTE)
 
-	def PUSH(self, ADDR):
-		self.ADDRBUS.PUSH(ADDR)
-		# DEBUG ======================= #
-		print('BUS: PUSH: ' + str(ADDR)) #
-
-	def POP(self):
-		# DEBUG ======================= #
-		print('BUS: POP: ' + self.ADDRBUS.PEEK()) #
-
-		self.ADDRBUS.POP()
+	def POP(self): # POP Function
+		ADDR().POP()
 
 class DATA():
 
-	def __init__(self):
-		self.WIDTH = 8
-		self.BYTE = []
-		self.RAM = RAM()
-
-	def DATA(self, ADDR):
-		if ADDR in self.RAM.ADDRESS:
-			DATA = self.RAM.ADDRESS[ADDR]
+	def READ(self):
+		if RAM().ADDRESS[ADDR().PEEK()]:
+			DATA = RAM().ADDRESS[ADDR().PEEK()]
 		else:
-			DATA = None
+			DATA = 0
+		DEBUG().MSG('BUS', 'DATA', 'BYTE', DATA)
+		return DATA
 
-		# DEBUG ======================= #
-		print('BUS: DATA: ' + str(DATA)) #
+class ADDR():
 
-		self.BYTE = []
-		while DATA:
-			if DATA != None:
-				if DATA[0] != None:
-					self.BYTE.append(DATA[:self.WIDTH])
-					DATA = DATA[self.WIDTH:]
-				else:
-					self.BYTE = [None]
-					break
-			else:
-				self.BYTE = [None]
-				break
-
-		return self.BYTE
-
-class ADDR:
+	ADDRESS = []
 
 	def __init__(self):
-		self.ADDR = []
+		pass
 
-	def PUSH(self, ADDR):
-		self.ADDR.append(ADDR)
+	def PUSH(self, BYTE):
+		self.ADDRESS.append(BYTE)
+		DEBUG().MSG('BUS', 'ADDR', 'PUSH', BYTE)
 
 	def POP(self):
-		self.ADDR.pop()
+		DEBUG().MSG('BUS', 'ADDR', 'POP', self.PEEK())
+		self.ADDRESS.pop()
 
 	def PEEK(self):
-		return self.ADDR[-1]
+		return self.ADDRESS[-1]
