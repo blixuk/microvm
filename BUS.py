@@ -4,7 +4,8 @@ from DEBUG import DEBUG
 class BUS():
 
 	def SEND(self, BYTE):	# Send Function
-		pass
+		DATA().WRITE(BYTE) # Write bytes to RAM
+		DEBUG().MSG('BUS', 'SEND', 'DATA', hex(BYTE))
 	
 	def RECEIVE(self): # Receive Function
 		BYTE = DATA().READ() # Read bytes from RAM
@@ -25,8 +26,16 @@ class DATA():
 			DATA = RAM().ADDRESS[ADDR().PEEK()] # Assign the value from address
 		else:
 			DATA = 0 # If no value assign 0
-		DEBUG().MSG('BUS', 'DATA', 'BYTE', hex(DATA))
+		DEBUG().MSG('BUS', 'DATA', 'READ', hex(DATA))
 		return DATA # Return the value
+
+	def WRITE(self, BYTE):
+		# Check if there is a value at the current address
+		if RAM().ADDRESS[ADDR().PEEK()]:
+			RAM().ADDRESS[ADDR().PEEK()] = BYTE # Write to Address
+			DEBUG().MSG('BUS', 'DATA', 'WRITE', DATA)
+		else:
+			DEBUG().MSG('BUS', 'DATA', 'WRITE', 'NO ADDRESS')
 
 class ADDR():
 
