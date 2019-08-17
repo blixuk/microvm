@@ -9,12 +9,10 @@ class CPU():
 	def __init__(self):
 		self.TICKS = 1					# Clock speed
 		self.TPS = 1. / self.TICKS		# Ticks per second
-		self.HALT = 0					# Stop Processing
+		self.END = 0					# Stop Processing
 		self.PC = 0						# Program Counter
 		self.IR = 0						# Instruction Register
 		self.AC = 0						# Accumulator
-		self.ST = STACK()				# Stack
-		self.CACHE = [lambda: self.PC, lambda: self.IR, lambda: self.AC, lambda: self.ST]	# Cache Memory
 
 	def RUN(self, ARG): # Run Procedure
 		DEBUG().DEBUG(ARG) # Enable / Disable Debug Messages
@@ -23,7 +21,7 @@ class CPU():
 		self.CLOCK() # Start the Clock Cycle
 
 	def CLOCK(self): # Clock Procedure
-		while(self.HALT != 1):
+		while(self.END != 1):
 			self.FETCH()	# Fetch Cycle
 			self.TICK()		# Tick Cycle
 			self.DECODE()	# Decode Cycle
@@ -55,7 +53,7 @@ class CPU():
 		# DEBUG ====================================== #
 		if self.IR == 0: #
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'END')
-			self.HALT = 1
+			self.END = 1
 		elif self.IR == 255:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'MAX')
 
@@ -74,32 +72,6 @@ class CPU():
 	
 	def WRITE(self, ADDR, DATA): # Write Procedure
 		pass
-
-class STACK:
-	def __init__(self):
-		self.STACK = []
-
-	def PUSH(self, DATA):
-		self.STACK.append(DATA)
-
-	def POP(self):
-		self.STACK.pop()
-
-	def PEEK(self):
-		return self.STACK[-1]
-
-	def NONE(self):
-		return self.STACK == []
-	
-	def COUNT(self):
-		return len(self.STACK)
-
-	def STACK(self):
-		return self.STACK
-
-	def DUMP(self):
-		while self.STACK:
-			yield self.STACK.pop()
 
 # Commands
 # HEX: 00 | ASM: END - End Operation
