@@ -39,23 +39,20 @@ class CPU():
 		self.READ()
 
 	def DECODE(self): # Decode Procedure
-		DEBUG().MSG('CPU', 'DECODE', 'IR', hex(self.IR))
-
-		# COUNTER = 0
-		# for BYTE in self.IR:
-		# 	self.BUGMSG('CPU', 'DECODE', 'BYTE', '[' +str(COUNTER) + '] ' + str(BYTE))
-		# 	COUNTER += 1
-
+		self.IR = hex(self.IR)[2:].zfill(2) # Remove 0x and fill with 0
+		DEBUG().MSG('CPU', 'DECODE', 'IR', self.IR)
+		self.AC = self.IR[1:] # Put the 2nd value into the Accumulator
+		DEBUG().MSG('CPU', 'DECODE', 'AC', self.AC)
 		# Remove the last Address from the BUS
 		BUS().POP()
 
 	def EXECUTE(self): # Execute Procedure
 		# DEBUG ====================================== #
-		if self.IR == 0: #
+		if self.IR[:1] == '0':
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'END')
 			self.END = 1
-		elif self.IR == 255:
-			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'MAX')
+		elif self.IR[:1] == 'f':
+			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NOP')
 
 	def COUNT(self): # Count Procedure
 		# Take the current Step value and convert into a Binary number
@@ -74,21 +71,19 @@ class CPU():
 		pass
 
 # Commands
-# HEX: 00 | ASM: END - End Operation
-# HEX: 01 | ASM: --
-# HEX: 02 | ASM: --
-# HEX: 03 | ASM: --
-# HEX: 04 | ASM: --
-# HEX: 05 | ASM: --
-# HEX: 06 | ASM: --
-# HEX: 07 | ASM: --
-# HEX: 08 | ASM: --
-# HEX: 09 | ASM: --
-# HEX: 0A | ASM: --
-# HEX: 0B | ASM: --
-# HEX: 0C | ASM: --
-# HEX: 0D | ASM: --
-# HEX: 0E | ASM: --
-# HEX: 0F | ASM: --
-
-# HEX: FF | ASM: NOP - No Operation
+# HEX: 0 | ASM: END - End Operation
+# HEX: 1 | ASM: --
+# HEX: 2 | ASM: --
+# HEX: 3 | ASM: --
+# HEX: 4 | ASM: --
+# HEX: 5 | ASM: --
+# HEX: 6 | ASM: --
+# HEX: 7 | ASM: --
+# HEX: 8 | ASM: --
+# HEX: 9 | ASM: --
+# HEX: A | ASM: --
+# HEX: B | ASM: --
+# HEX: C | ASM: --
+# HEX: D | ASM: --
+# HEX: E | ASM: --
+# HEX: F | ASM: NOP - No Operation
