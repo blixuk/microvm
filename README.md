@@ -69,6 +69,7 @@ Store all bytes data for the CPU to compute and store the computains from the CP
 # Programming
 
 ## ByteCode
+```
 DEC  HEX ASM   
  0 - 0 - END | End Operation
  1 - 1 - LOD | Load into Accumulator
@@ -86,9 +87,10 @@ DEC  HEX ASM
 13 - D -     | 
 14 - E - NUM | Number
 15 - F - NOP | No Operation
+```
 
 ## micro Assembly Code
-
+```
 - END | End Operation
 - LOD | Load into Accumulator
 - STR | Store Accumulator in Address
@@ -105,6 +107,7 @@ DEC  HEX ASM
 - 
 - NUM | Number
 - NOP | No Operation
+```
 
 ## micro Programming Language
 
