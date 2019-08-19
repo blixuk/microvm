@@ -1,12 +1,14 @@
 # Counter
-# 16 LOD 6
-# 37 ADD 7
-# 26 STR 6
-# 51 JMP 1
-# f0 NOP
-# f0 NOP
-# 01 1
-# 01 1
+# HEX   |  ASM
+#--------------
+# 01 06 | LOD 6
+# 03 07 | ADD 7
+# 02 06 | STR 6
+# 05 01 | JMP 1
+# 0f 00 | NOP 0
+# 0f 00 | NOP 0
+# 00 01 | NUM 1
+# 00 01 | NUM 1
 
 LOD 6
 ADD 7
