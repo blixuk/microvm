@@ -1,0 +1,18 @@
+# Counter
+# 16 LOD 6
+# 37 ADD 7
+# 26 STR 6
+# 51 JMP 1
+# f0 NOP
+# f0 NOP
+# 01 1
+# 01 1
+
+LOD 6
+ADD 7
+STR 6
+JMP 1
+NOP 0
+NOP 0
+NUM 1
+NUM 1

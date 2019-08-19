@@ -1,7 +1,6 @@
 import time
 
 from BUS import BUS
-from BUS import ADDR
 from DEBUG import DEBUG
 
 class CPU():
@@ -14,8 +13,8 @@ class CPU():
 		self.IR = 0						# Instruction Register
 		self.AC = 0						# Accumulator
 
-	def RUN(self, ARG): # Run Procedure
-		DEBUG().DEBUG(ARG) # Enable / Disable Debug Messages
+	def RUN(self): # Run Procedure
+		#DEBUG().DEBUG(BUG) # Enable / Disable Debug Messages
 		DEBUG().MSG('CPU','RUN','CMD','DEBUG')
 		DEBUG().MSG('CPU','RUN','CMD','START')
 		self.CLOCK() # Start the Clock Cycle
@@ -30,7 +29,6 @@ class CPU():
 			self.TICK()		# Tick Cycle
 			self.COUNT()	# Count Cycle
 			self.TICK()		# Tick Cycle
-			print()
 
 	def FETCH(self): # Fetch Procedure
 		# Send the current Address form the Program Counter to the BUS
@@ -40,46 +38,51 @@ class CPU():
 		self.READ()
 
 	def DECODE(self): # Decode Procedure
-		self.IR = hex(self.IR)[2:].zfill(2) # Remove 0x and fill with 0
+		#self.IR = hex(self.IR)[2:].zfill(2) # Remove 0x and fill with 0
+		CMD = int.from_bytes(self.IR[:1], byteorder='little')
+		VAL = int.from_bytes(self.IR[1:], byteorder='little')
+		self.IR = [CMD, VAL]
+		#print(int.from_bytes(self.IR, byteorder='little'))
 		DEBUG().MSG('CPU', 'DECODE', 'IR', self.IR)
-		# Remove the last Address from the BUS
-		BUS().POP()
+		BUS().POP() # Pop Address from the BUS
 
 	def EXECUTE(self): # Execute Procedure
-		# DEBUG ====================================== #
-		if self.IR[:1] == '0':
+		if self.IR[0] == 0:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'END') # END OPERATION
 			self.END = 1
-		elif self.IR[:1] == 'f':
+		elif self.IR[0] ==  15:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NOP') # NO OPERATION
 			pass
-		elif self.IR[:1] == '1':
+		elif self.IR[0] ==  14:
+			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NUM') # JUMP
+			DEBUG().MSG('CPU', 'JMP', 'PC', self.IR[1])
+		elif self.IR[0] ==  1:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'LOD') # LOAD
-			BUS().PUSH(int(self.IR[1:])) # Push Address to BUS
-			self.AC = BUS().RECEIVE() # Add to Accumulator from RAM
+			BUS().PUSH(self.IR[1]) # Push Address to BUS
+			self.AC = int.from_bytes(BUS().RECEIVE()[1:], byteorder='little') # Add to Accumulator from RAM
 			DEBUG().MSG('CPU', 'LOD', 'AC', self.AC)
 			BUS().POP() # Pop Address from BUS
-		elif self.IR[:1] == '2':
+		elif self.IR[0] ==  2:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'STR') # STORE
-			BUS().PUSH(int(self.IR[1:])) # Push Address to BUS
-			self.WRITE(self.AC) # Write Accumulator to RAM
+			BUS().PUSH(self.IR[1]) # Push Address to BUS
+			self.WRITE() # Write Accumulator to RAM
 			DEBUG().MSG('CPU', 'STR', 'AC', self.AC)
 			BUS().POP() # Pop Address from BUS
-		elif self.IR[:1] == '3':
+		elif self.IR[0] ==  3:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'ADD') # ADD
-			BUS().PUSH(int(self.IR[1:])) # Push Address to BUS
-			self.AC += BUS().RECEIVE() # Add to Accumulator from RAM
+			BUS().PUSH(self.IR[1]) # Push Address to BUS
+			self.AC += int.from_bytes(BUS().RECEIVE()[1:], byteorder='little') # Add to Accumulator from RAM
 			DEBUG().MSG('CPU', 'ADD', 'AC', self.AC)
 			BUS().POP() # Pop Address from BUS
-		elif self.IR[:1] == '4':
+		elif self.IR[0] ==  4:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'SUB') # SUB
-			BUS().PUSH(int(self.IR[1:])) # Push Address to BUS
-			self.AC -= BUS().RECEIVE() # Sub from Accumulator from RAM
+			BUS().PUSH(self.IR[1]) # Push Address to BUS
+			self.AC -= int.from_bytes(BUS().RECEIVE()[1:], byteorder='little') # Sub from Accumulator from RAM
 			DEBUG().MSG('CPU', 'SUB', 'AC', self.AC)
 			BUS().POP() # Pop Address from BUS
-		elif self.IR[:1] == '5':
+		elif self.IR[0] ==  5:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'JMP') # JUMP
-			self.PC = int(self.IR[1:]) - 1 # Change Program Counter value
+			self.PC = int.from_bytes(self.IR[1:], byteorder='little') - 1 # Change Program Counter value
 			DEBUG().MSG('CPU', 'JMP', 'PC', self.PC + 1)
 
 	def COUNT(self): # Count Procedure
@@ -95,23 +98,42 @@ class CPU():
 	def READ(self): # Read Procedure
 		self.IR =  BUS().RECEIVE()
 	
-	def WRITE(self, DATA): # Write Procedure
-		BUS().SEND(DATA)
+	def WRITE(self): # Write Procedure
+		BUS().SEND((self.AC).to_bytes(1, byteorder='little')) # Push the Accumulator value to RAM
+
+	def LOAD(self, BIN):
+		DEBUG().MSG('CPU','LOAD','BIN', BIN)
+		DATA = open(BIN, "rb")
+		BUS().CLEAR()
+		BYTE = DATA.readlines()
+
+		counter = []
+
+		for BIT in BYTE[0]:
+			counter.append(BIT)
+
+			if len(counter) == 2:
+				CMD = (counter[0]).to_bytes(2, byteorder='little')
+				VAL = (counter[1]).to_bytes(2, byteorder='little')
+				BUS().LOAD(CMD[:1] + VAL[:1])
+				counter.clear()
+		
+		self.RUN()
 
 # Commands
-# HEX: 0 | ASM: END - End Operation
-# HEX: 1 | ASM: LOD - Load into Accumulator
-# HEX: 2 | ASM: STR - Store Accumulator in Address
-# HEX: 3 | ASM: ADD - Add to Accumulator
-# HEX: 4 | ASM: SUB - Sub from Accumulator
-# HEX: 5 | ASM: JMP - Jump to Address
-# HEX: 6 | ASM: --
-# HEX: 7 | ASM: --
-# HEX: 8 | ASM: --
-# HEX: 9 | ASM: --
-# HEX: A | ASM: --
-# HEX: B | ASM: --
-# HEX: C | ASM: --
-# HEX: D | ASM: --
-# HEX: E | ASM: --
-# HEX: F | ASM: NOP - No Operation
+#  0 HEX: 00 | ASM: END - End Operation
+#  1 HEX: 01 | ASM: LOD - Load into Accumulator
+#  2 HEX: 02 | ASM: STR - Store Accumulator in Address
+#  3 HEX: 03 | ASM: ADD - Add to Accumulator
+#  4 HEX: 04 | ASM: SUB - Sub from Accumulator
+#  5 HEX: 05 | ASM: JMP - Jump to Address
+#  6 HEX: 06 | ASM: --
+#  7 HEX: 07 | ASM: --
+#  8 HEX: 08 | ASM: --
+#  9 HEX: 09 | ASM: --
+# 10 HEX: 0A | ASM: --
+# 11 HEX: 0B | ASM: --
+# 12 HEX: 0C | ASM: --
+# 13 HEX: 0D | ASM: --
+# 14 HEX: 0E | ASM: NUM - Number
+# 15 HEX: 0F | ASM: NOP - No Operation
