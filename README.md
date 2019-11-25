@@ -10,7 +10,7 @@ A really simple virtual machine, that loads a basic bytecode into ram and execut
 
 - Compiler
 
-	- Compile '.mvm' files containing MVM ASM code into '.bin' binary files of MVM ByteCode.
+	- Compile '.mvm' files containing mVM ASM code into '.bin' binary files of mVM ByteCode.
 
 ## CPU
 
@@ -68,7 +68,7 @@ Store all bytes data for the CPU to compute and store the output from the CPU.
 
 # Programming
 
-## ByteCode
+## microVM ByteCode
 ```
 HEX 
 00 | End Operation
@@ -89,7 +89,7 @@ HEX
 0F | No Operation
 ```
 
-## micro Assembly Code
+## microVM Assembly Code
 ```
 END | End Operation
 LOD | Load into Accumulator
@@ -109,9 +109,12 @@ NUM | Number
 NOP | No Operation
 ```
 
-## micro Programming Language
+## microVM Programming Language
 
-## Sample ByteCode Program
+```
+```
+
+## Sample microVM Program
 
 #### Loop Counter
 
