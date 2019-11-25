@@ -6,11 +6,11 @@ A really simple virtual machine, that loads a basic bytecode into ram and execut
 
 - Load / Run
 
-Load BIN files into RAM and execute them.
+	- Load BIN files into RAM and execute them.
 
 - Compiler
 
-Compile .mvm ASM code into .bin binary files of ByteCode.
+	- Compile '.mvm' files containing MVM ASM code into '.bin' binary files of MVM ByteCode.
 
 ## CPU
 
@@ -18,15 +18,15 @@ Step Cycle CPU that you can set the processing speed of. The CPU consists of a f
 
 - Fetch
 
-Get the current byte from the current RAM Address on the BUS.
+	- Get the current byte from the current RAM Address on the BUS.
 
 - Decode
 
-Read the current Byte and Parse it to be Executed.
+	- Read the current Byte and Parse it to be Executed.
 
 - Execute
 
-Execute the the current command. 
+	- Execute the the current command. 
 
 - Program Counter
 - Instruction Register
@@ -64,49 +64,49 @@ Push and Pop the current Address for Reading and Writing byte data.
 
 ## RAM
 
-Store all bytes data for the CPU to compute and store the computains from the CPU.
+Store all bytes data for the CPU to compute and store the output from the CPU.
 
 # Programming
 
 ## ByteCode
 ```
-DEC  HEX ASM   
- 0 - 0 - END | End Operation
- 1 - 1 - LOD | Load into Accumulator
- 2 - 2 - STR | Store Accumulator in Address
- 3 - 3 - ADD | Add to Accumulator
- 4 - 4 - SUB | Sub from Accumulator
- 5 - 5 - JMP | Jump to Address
- 6 - 6 -     | 
- 7 - 7 -     | 
- 8 - 8 -     | 
- 9 - 9 -     | 
-10 - A -     |
-11 - B -     | 
-12 - C -     | 
-13 - D -     | 
-14 - E - NUM | Number
-15 - F - NOP | No Operation
+HEX 
+00 | End Operation
+01 | Load into Accumulator
+02 | Store Accumulator in Address
+03 | Add to Accumulator
+04 | Sub from Accumulator
+05 | Jump to Address
+06 | 
+07 | 
+08 | 
+09 | 
+0A |
+0B | 
+0C | 
+0D | 
+0E | Number
+0F | No Operation
 ```
 
 ## micro Assembly Code
 ```
-- END | End Operation
-- LOD | Load into Accumulator
-- STR | Store Accumulator in Address
-- ADD | Add to Accumulator
-- SUB | Sub from Accumulator
-- JMP | Jump to Address
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- NUM | Number
-- NOP | No Operation
+END | End Operation
+LOD | Load into Accumulator
+STR | Store Accumulator in Address
+ADD | Add to Accumulator
+SUB | Sub from Accumulator
+JMP | Jump to Address
+-   |
+-   |
+-   |
+-   |
+-   |
+-   |
+-   |
+-   |
+NUM | Number
+NOP | No Operation
 ```
 
 ## micro Programming Language
