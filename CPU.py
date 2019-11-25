@@ -1,4 +1,5 @@
 import time
+import sys
 
 from BUS import BUS
 from DEBUG import DEBUG
@@ -54,7 +55,7 @@ class CPU():
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NOP') # NO OPERATION
 			pass
 		elif self.IR[0] ==  14:
-			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NUM') # JUMP
+			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'NUM') # NUMBER
 			DEBUG().MSG('CPU', 'JMP', 'PC', self.IR[1])
 		elif self.IR[0] ==  1:
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'LOD') # LOAD
@@ -84,6 +85,10 @@ class CPU():
 			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'JMP') # JUMP
 			self.PC = int.from_bytes(self.IR[1:], byteorder='little') - 1 # Change Program Counter value
 			DEBUG().MSG('CPU', 'JMP', 'PC', self.PC + 1)
+		elif self.IR[0] == 6:
+			DEBUG().MSG('CPU', 'EXECUTE', 'CMD', 'PNT') # PRINT
+			self.PRINT(self.IR[1])
+			BUS().POP() # Pop Address from BUS
 
 	def COUNT(self): # Count Procedure
 		# Take the current Step value and convert into a Binary number
@@ -100,6 +105,27 @@ class CPU():
 	
 	def WRITE(self): # Write Procedure
 		BUS().SEND((self.AC).to_bytes(1, byteorder='little')) # Push the Accumulator value to RAM
+
+	def PRINT(self, OPERATION):
+		if OPERATION == 0:
+			OUT = self.IR
+			DEBUG().MSG('CPU', 'PNT', 'IR', self.IR)
+		elif OPERATION == 1:
+			OUT = self.IR[1:]
+			DEBUG().MSG('CPU', 'PNT', 'IR CMD', self.IR[1:])
+		elif OPERATION == 2:
+			OUT = self.IR[:1]
+			DEBUG().MSG('CPU', 'PNT', 'IR VAL', self.IR[:1])
+		elif OPERATION == 3:
+			OUT = self.PC
+			DEBUG().MSG('CPU', 'PNT', 'PC', self.PC)
+		elif OPERATION == 4:
+			OUT = self.AC
+			DEBUG().MSG('CPU', 'PNT', 'AC', self.AC)
+		else:
+			OUT = 'ERROR'
+		
+		sys.stdout.write(OUT)
 
 	def LOAD(self, BIN):
 		DEBUG().MSG('CPU','LOAD','BIN', BIN)
@@ -127,7 +153,7 @@ class CPU():
 #  3 HEX: 03 | ASM: ADD - Add to Accumulator
 #  4 HEX: 04 | ASM: SUB - Sub from Accumulator
 #  5 HEX: 05 | ASM: JMP - Jump to Address
-#  6 HEX: 06 | ASM: --
+#  6 HEX: 06 | ASM: PNT	- Print to Console
 #  7 HEX: 07 | ASM: --
 #  8 HEX: 08 | ASM: --
 #  9 HEX: 09 | ASM: --

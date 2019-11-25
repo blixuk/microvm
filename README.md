@@ -77,7 +77,7 @@ HEX
 03 | Add to Accumulator
 04 | Sub from Accumulator
 05 | Jump to Address
-06 | 
+06 | Print to Console
 07 | 
 08 | 
 09 | 
@@ -97,7 +97,7 @@ STR | Store Accumulator in Address
 ADD | Add to Accumulator
 SUB | Sub from Accumulator
 JMP | Jump to Address
--   |
+PNT | Print to Console
 -   |
 -   |
 -   |
