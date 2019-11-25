@@ -68,7 +68,7 @@ Store all bytes data for the CPU to compute and store the output from the CPU.
 
 # Programming
 
-## ByteCode
+## MicroVM ByteCode
 ```
 HEX 
 00 | End Operation
@@ -89,7 +89,7 @@ HEX
 0F | No Operation
 ```
 
-## micro Assembly Code
+## MicroVM Assembly Code
 ```
 END | End Operation
 LOD | Load into Accumulator
@@ -109,7 +109,7 @@ NUM | Number
 NOP | No Operation
 ```
 
-## micro Programming Language
+## MicroVM Programming Language
 
 ## Sample ByteCode Program
 
